@@ -1,4 +1,9 @@
-from funciones import descuento, recargo, genero
+from funciones import descuento, recargo, genero, pedir_dni, pedir_apynom, pedir_fecha, pedir_genero, pedir_mail, tramo_colectivo, pedir_distancia, pedir_opcion, mostrar_saldo, cargar_sube
+
+VALOR_PASAJE_COLECTIVO = [270,301,323,347,370]
+VALOR_PASAJE_SUBTE = 757
+VALOR_PASAJE_TREN = [130,169,208]
+SALDO_NEGATIVO_MAXIMO = -480
 
 class TarjetaNoRegistrada:
     def __init__(self,numero,saldo):
@@ -20,11 +25,12 @@ class TarjetaNoRegistrada:
         self._baja = not self._baja
 
     def registrar_tarjeta(self):
-        dni = input("ingrese DNI: ")
-        apynom = input("ingrese Apellido y Nombre: ")
-        fecha_nacimiento = input("ingrese Fecha de nacimiento(dd/mm/yyyy): ")
-        genero = input("ingrese genero(1: Masculino/2: Femenino/3: X): ")
-        mail = input("ingrese Correo Electronico: ")
+        dni = pedir_dni()
+        apynom = pedir_apynom()
+        fecha_nacimiento = pedir_fecha()
+        genero = pedir_genero()
+        mail = pedir_mail()
+        print(" ")
         print("sube registrada correctamente")
         return TarjetaRegistrada(self.get_numero(),self.get_saldo(),apynom,dni,fecha_nacimiento,genero,mail,False)
     
@@ -32,10 +38,15 @@ class TarjetaNoRegistrada:
         nuevo_saldo = self.get_saldo() + carga
         self.set_saldo(nuevo_saldo)
     
-    def viaje_colectivo(self):
-        valor_pasaje = 215
-        nuevo_saldo = self.get_saldo() - recargo(valor_pasaje)
+    def viaje_colectivo(self,i):
+        nuevo_saldo = self.get_saldo() - recargo(VALOR_PASAJE_COLECTIVO[i])
         self.set_saldo(nuevo_saldo)
+
+    def saldo_disponible(self,valor_pasaje):
+        if (self.get_saldo()-valor_pasaje)>=SALDO_NEGATIVO_MAXIMO:
+            return True
+        else:
+            return False
 
 
 class TarjetaRegistrada(TarjetaNoRegistrada):
@@ -78,12 +89,11 @@ class TarjetaRegistrada(TarjetaNoRegistrada):
     def set_descuento(self):
         self._descuento = not self._descuento
 
-    def viaje_colectivo(self):
-        valor_pasaje = 215
+    def viaje_colectivo(self,i):
         if self.get_descuento()==True:
-            nuevo_saldo = self.get_saldo() - descuento(valor_pasaje)
+            nuevo_saldo = self.get_saldo() - descuento(VALOR_PASAJE_COLECTIVO[i])
         else:
-            nuevo_saldo = self.get_saldo() - valor_pasaje
+            nuevo_saldo = self.get_saldo() - VALOR_PASAJE_COLECTIVO[i]
         self.set_saldo(nuevo_saldo)
 
     def consulta_datos_tarjeta(self):
@@ -97,8 +107,81 @@ class TarjetaRegistrada(TarjetaNoRegistrada):
 def crear_tarjeta():
     return TarjetaNoRegistrada("6061268506072830",float(0))
 
+def menu_sube_no_registrada(sube):
+    def volver_a_menu(sube):
+        print(" ")
+        input("presione ENTER para volver al menu anterior")
+        print(" ")
+        menu_sube_no_registrada(sube)
+        
+
+    print("1. Registrar Sube")
+    print("2. Cargar Sube")
+    print("3. Ver Saldo")
+    print("4. Viajar")
+    print("5. Salir")
+    print(" ")
+    opc = pedir_opcion()
+    match opc:
+        case 1:
+            print(" ")
+            sube = sube.registrar_tarjeta()
+            print(" ")
+            menu_sube_registrada(sube)
+        case 2:
+            cargar_sube(sube)
+            volver_a_menu(sube)
+        case 3:
+            mostrar_saldo(sube)
+            volver_a_menu(sube)
+        case 4:
+            print(" ")
+            distancia = pedir_distancia()
+            tramo = tramo_colectivo(distancia)
+            sube.viaje_colectivo(tramo)
+            print(" ")
+            print("Pago realizado")
+            mostrar_saldo(sube)
+            volver_a_menu(sube)
+        case 5:
+            pass
+
+def menu_sube_registrada(sube):
+    def volver_a_menu(sube):
+        print(" ")
+        input("presione ENTER para volver al menu anterior")
+        print(" ")
+        menu_sube_registrada(sube)
+        
+    print("1. Ver Datos Personales")
+    print("2. Cargar Sube")
+    print("3. Ver Saldo")
+    print("4. Viajar")
+    print("5. Salir")
+    print(" ")
+    opc = pedir_opcion()
+    match opc:
+        case 1:
+            print(" ")
+            sube.consulta_datos_tarjeta()
+            print(" ")
+            volver_a_menu(sube)
+        case 2:
+            cargar_sube(sube)
+            volver_a_menu(sube)
+        case 3:
+            mostrar_saldo(sube)
+            volver_a_menu(sube)
+        case 4:
+            pass
+        case 5:
+            pass
+    
+
+    
+
+
+
 
 sube = crear_tarjeta()
-tarjeta_registrada = sube.registrar_tarjeta()
-print(" ")
-tarjeta_registrada.viaje_colectivo()
+menu_sube_no_registrada(sube)
