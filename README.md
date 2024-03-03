@@ -6,8 +6,8 @@ la tarjeta en la cual instanciamos una clase tarjeta registrada que hereda los a
 anterior, y a su vez obteniendo los beneficios de esta.
 
 El fin del proyecto es:
-    Aplicar conocimientos y practicar POO en python
-    Continuar practicando la sintaxis de python
-    Trabajar sin utilizar librerias externas
-    Crear validadores varios con manejo de string y utilizar menus interactivos
+Aplicar conocimientos y practicar POO en python
+Continuar practicando la sintaxis de python
+Trabajar sin utilizar librerias externas
+Crear validadores varios con manejo de string y utilizar menus interactivos
     
