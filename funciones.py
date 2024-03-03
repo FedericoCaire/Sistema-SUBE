@@ -1,4 +1,5 @@
 from validaciones import dni_valido,genero_valido,apynom_valido,mail_valido,fecha_valida
+from mensajes import msj_carga_exitosa
 def descuento(x): #Descuento Por Tarifa Social
         return x*0.45
 
@@ -91,13 +92,13 @@ def tramo_colectivo(distancia):
     else:
         return 4
     
-def pedir_opcion():
+def pedir_opcion(cant_opciones):
     try:
         opc = int(input("Ingrese una opcion: "))
     except:
         print("Ingrese una opcion valida")
         return pedir_opcion()
-    if opc>=1 and opc<=5:
+    if opc>=1 and opc<=cant_opciones:
         return opc
     else:
         print("Ingrese una opcion valida")
@@ -121,17 +122,25 @@ def pedir_distancia():
     else:
         print("Ingrese un numero valido")
         return pedir_distancia()
+    
+def pedir_tramo_tren():
+    try:
+        tramo = int(input("Indique el tramo que realizara(1,2 o 3): "))
+    except:
+        print("Ingrese un numero valido")
+        return pedir_tramo_tren()
+    if tramo>=1 and tramo<=3:
+        return tramo-1
+    else:
+        print("Ingrese un numero valido")
+        return pedir_tramo_tren()
 
-def mostrar_saldo(sube):
-    print(" ")
-    print(f"Su saldo actual es de: {sube.get_saldo()}")
+mostrar_saldo = lambda sube: print(f"Su saldo actual es de: {sube.get_saldo()}")
 
 def cargar_sube(sube):
-    print(" ")
     carga = pedir_carga()
     sube.cargar_tarjeta(carga)
-    print(" ")
-    print("Cargar Exitosa")
+    msj_carga_exitosa()
     mostrar_saldo(sube)
 
 
